@@ -2,6 +2,8 @@ package com.computerscience.main;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ArrayListTest {
@@ -13,7 +15,7 @@ public class ArrayListTest {
         arrayList.append("Banana");
         //Then I need to make sure of the array size and which elements are inside
         assert arrayList.size() == 1;
-        assert arrayList.get(0) == "Banana";
+        assert Objects.equals(arrayList.get(0), "Banana");
     }
 
     @Test
@@ -36,19 +38,19 @@ public class ArrayListTest {
         //when I insert on index 0, then Banana should be right shifted
         arrayList.append("Grape", 0);
         assert arrayList.size() == 2;
-        assert arrayList.get(0) == "Grape";
-        assert arrayList.get(1) == "Banana";
+        assert Objects.equals(arrayList.get(0), "Grape");
+        assert Objects.equals(arrayList.get(1), "Banana");
         //and I insert on pos 2, then Orange should be on the end
         arrayList.append("Orange", 2);
         assert arrayList.size() == 3;
-        assert arrayList.get(2) == "Orange";
+        assert Objects.equals(arrayList.get(2), "Orange");
         //and I insert on pos 1, Strawberry should be 1 and everything else should be right shifted
         arrayList.append("Strawberry", 1);
         assert arrayList.size() == 4;
-        assert arrayList.get(0) == "Grape";
-        assert arrayList.get(1) == "Strawberry";
-        assert arrayList.get(2) == "Banana";
-        assert arrayList.get(3) == "Orange";
+        assert Objects.equals(arrayList.get(0), "Grape");
+        assert Objects.equals(arrayList.get(1), "Strawberry");
+        assert Objects.equals(arrayList.get(2), "Banana");
+        assert Objects.equals(arrayList.get(3), "Orange");
     }
 
     @Test
@@ -89,7 +91,7 @@ public class ArrayListTest {
         arrayList.append("Grape");
         //when I try to remove the banana object I need to verify that only grape exists
         arrayList.remove("Banana");
-        assert arrayList.get(0) == "Grape";
+        assert Objects.equals(arrayList.get(0), "Grape");
         assert arrayList.size() == 1;
     }
 
@@ -101,8 +103,8 @@ public class ArrayListTest {
         arrayList.append("Grape");
         //when I try to remove the non-existing object, nothing happens
         arrayList.remove("Strawberry");
-        assert arrayList.get(0) == "Banana";
-        assert arrayList.get(1) == "Grape";
+        assert Objects.equals(arrayList.get(0), "Banana");
+        assert Objects.equals(arrayList.get(1), "Grape");
         assert arrayList.size() == 2;
     }
 

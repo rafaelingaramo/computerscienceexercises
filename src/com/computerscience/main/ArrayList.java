@@ -1,8 +1,9 @@
 package com.computerscience.main;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
-public class ArrayList<T> {
+public class ArrayList<T> implements Iterable<T> {
 
     private int buffer = 3;
     private int internalSize = 0;
@@ -99,10 +100,41 @@ public class ArrayList<T> {
         return internalSize;
     }
 
-    public Object get(int index) {
+    public T get(int index) {
         if (index < 0 || index > internalSize) {
             throw new ArrayIndexOutOfBoundsException("asked index is out of bounds");
         }
-        return internalArray[index];
+        return (T) internalArray[index];
     }
+
+    public void appendAll(ArrayList<T> collection) {
+        for(T item: collection) {
+            this.append(item);
+        }
+    }
+
+    private static class ArrayListIterator<T> implements Iterator<T> {
+        private final ArrayList<T> list;
+        private int currentIndex = 0;
+
+        public ArrayListIterator(ArrayList<T> list) {
+            this.list = list;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < list.internalSize;
+        }
+
+        @Override
+        public T next() {
+            return (T) list.get(currentIndex++);
+        }
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new ArrayListIterator<T>(this);
+    }
+
 }

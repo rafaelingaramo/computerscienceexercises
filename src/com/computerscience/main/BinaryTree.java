@@ -8,19 +8,31 @@ public class BinaryTree {
     }
 
     public static class BinaryNode {
-        private Integer value;
+        private final Integer value;
         private BinaryNode parent;
         private BinaryNode left;
         private BinaryNode right;
 
+        static BinaryNode withParent(Integer value, BinaryNode parent) {
+            return new BinaryNode(value, parent);
+        }
 
-        public BinaryNode(Integer value, BinaryNode parent) {
+        private BinaryNode(Integer value, BinaryNode parent) {
             this.value = value;
             this.parent = parent;
         }
 
         private BinaryNode(Integer value) {
             this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value.toString();
+        }
+
+        public boolean isRoot() {
+            return parent == null;
         }
     }
 
@@ -38,46 +50,54 @@ public class BinaryTree {
         }
     }
 
+    public void printTraversalOrder() {
+        ArrayList<Integer> traversalArrayList = getTraversalArrayList();
+        for (Integer item : traversalArrayList) {
+            System.out.print(item + " ");
+        }
+    }
 
-    public void printBinaryTree() {
-//        int leftHeight = this.root.left != null ? this.calculateHeight(this.root.left, 0) : 0;
-//        int rightHeight = this.root.right != null ? this.calculateHeight(this.root.right, 0) : 0;
-        //calculate mid side of pyramid
-//        int tabSpaces = Math.max(leftHeight, rightHeight)/2;
-//        String tabulation = new String(new char[tabSpaces]).replace("\0", "\t");
+    public ArrayList<Integer> getTraversalArrayList() {
+        ArrayList<Integer> traversalNodes = new ArrayList<>();
+        ArrayList<Integer> rightTraversalNodes = new ArrayList<>();
         if (root.left != null) {
-            printNodes(this.root.left, 1);
+            BinaryNode farLeftLeafNode = locateFarLeftLeafNode(this.root.left);
+            printTraversalNodes(farLeftLeafNode, traversalNodes);
         }
-        System.out.print(this.root.value);
         if (root.right != null) {
-            printNodes(this.root.right, 1);
+            BinaryNode farLeftLeafNodeFromRight = locateFarLeftLeafNode(this.root.right);
+            printTraversalNodes(farLeftLeafNodeFromRight, rightTraversalNodes);
         }
+        traversalNodes.append(this.root.value);
+        traversalNodes.appendAll(rightTraversalNodes);
+        return traversalNodes;
     }
 
-    private void printNodes(BinaryNode node, int level) {
-        System.out.print(node.value + " ");
-        int nextLevel = ++level;
-        if (node.left != null) {
-            printNodes(node.left, nextLevel);
+    private void printTraversalNodes(BinaryNode node, ArrayList<Integer> arrayList) {
+        //don't print root node
+        if (node.isRoot()) {
+            return;
         }
+        arrayList.append(node.value);
         if (node.right != null) {
-            printNodes(node.right, nextLevel);
+            arrayList.append(node.right.value);
+        }
+        if (node.parent != null) {
+            printTraversalNodes(node.parent, arrayList);
         }
     }
 
-//    private int calculateHeight(BinaryNode node, int height) {
-//        int levelLeftHeight = height;
-//        int levelRightHeight = height;
-//        int leftHeight = node.left != null ? calculateHeight(node.left, ++levelLeftHeight) : 0;
-//        int rightHeight = node.right != null ? calculateHeight(node.right, ++levelRightHeight) : 0;
-//
-//        return Math.max(leftHeight, rightHeight) + 1;
-//    }
+    private BinaryNode locateFarLeftLeafNode(BinaryNode node) {
+        if (node.left != null) {
+            return locateFarLeftLeafNode(node.left);
+        }
+        return node;
+    }
 
 
     private void subtree_addBefore(BinaryNode node, Integer value) {
         if (node.left == null) {
-            node.left = new BinaryNode(value, node);
+            node.left = BinaryNode.withParent(value, node);
             return;
         }
 
@@ -86,37 +106,22 @@ public class BinaryTree {
         if (compareTo > 0) {
             subtree_addAfter(node.left, value);
         } else {
-            if (node.left.right == null) {
-                node.left.right = new BinaryNode(value);
-            } else {
-                subtree_addBefore(node.left, value);
-            }
+            subtree_addBefore(node.left, value);
         }
     }
 
     private void subtree_addAfter(BinaryNode node, Integer value) {
         if (node.right == null) {
-            node.right = new BinaryNode(value, node);
+            node.right = BinaryNode.withParent(value, node);
             return;
         }
 
         //node.right is not null, therefore can't be added to the right side, is the value smaller or greater than the current node?
-        int compareTo = value.compareTo(node.value);
+        int compareTo = value.compareTo(node.right.value);
         if (compareTo > 0) {
             subtree_addAfter(node.right, value);
         } else {
-            subtree_addBefore(node.left, value);
+            subtree_addBefore(node.right, value);
         }
-    }
-
-    public static void main(String[] args) {
-        BinaryTree tree = new BinaryTree(10);
-        tree.add(5);
-        tree.add(15);
-        tree.add(3);
-        tree.add(7);
-        tree.add(11);
-
-        tree.printBinaryTree();
     }
 }
