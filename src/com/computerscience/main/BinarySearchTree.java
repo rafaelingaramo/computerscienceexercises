@@ -2,7 +2,7 @@ package com.computerscience.main;
 
 import java.util.Objects;
 
-public class BinaryTree {
+public class BinarySearchTree {
     private BinaryNode root;
 
     /**
@@ -13,7 +13,7 @@ public class BinaryTree {
      *                  <p>
      *                  Time complexity: O(1)
      */
-    public BinaryTree(Integer rootValue) {
+    public BinarySearchTree(Integer rootValue) {
         this.root = new BinaryNode(rootValue);
     }
 
