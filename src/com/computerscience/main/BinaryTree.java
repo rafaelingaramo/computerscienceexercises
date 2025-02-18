@@ -1,8 +1,18 @@
 package com.computerscience.main;
 
+import java.util.Objects;
+
 public class BinaryTree {
     private BinaryNode root;
 
+    /**
+     * Constructs a binary tree with a specified root value.
+     *
+     * @param rootValue The value of the root node.
+     *                  Must not be null.
+     *                  <p>
+     *                  Time complexity: O(1)
+     */
     public BinaryTree(Integer rootValue) {
         this.root = new BinaryNode(rootValue);
     }
@@ -34,8 +44,28 @@ public class BinaryTree {
         public boolean isRoot() {
             return parent == null;
         }
+
+        public boolean isLeaf() { return right == null && left == null; }
+
+        public Integer getValue() { return this.value; }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof BinaryNode other)) {
+                return false;
+            }
+            return Objects.equals(other.getValue(), this.getValue());
+        }
     }
 
+    /**
+     * Adds a value to the binary tree following binary search tree rules.
+     *
+     * @param value The value to add to the tree.
+     *              Must not be null.
+     *              <p>
+     *              Time complexity: O(h) where h is the height of the tree.
+     */
     public void add(Integer value) {
         if (this.root == null) {
             this.root = new BinaryNode(value);
@@ -45,11 +75,123 @@ public class BinaryTree {
         int rootCompare = value.compareTo(this.root.value);
         if (rootCompare > 0) {
             subtree_addAfter(this.root, value);
-        } else {
+        } else if (rootCompare < 0) {
             subtree_addBefore(this.root, value);
         }
     }
 
+    /**
+     * Prints the binary tree structure to the console.
+     * <p>
+     * Time complexity: O(n) where n is the number of nodes in the tree.
+     */
+    public void printTree() {
+        if (this.root == null) {
+            System.out.println("The tree is empty.");
+        } else {
+            printTree(this.root, "", true);
+        }
+    }
+
+    private void printTree(BinaryNode node, String prefix, boolean isLeft) {
+        if (node != null) {
+            printTree(node.right, prefix + (isLeft ? "│   " : "    "), false);
+            System.out.println(prefix + (isLeft ? "└── " : "┌── ") + node.getValue());
+            printTree(node.left, prefix + (isLeft ? "    " : "│   "), true);
+        }
+    }
+
+    /**
+     * Deletes a node from the binary tree by its value if it exists.
+     *
+     * @param value Value of the node to delete.
+     *              Must not be null.
+     *              <p>
+     *              Time complexity: O(h) where h is the height of the tree.
+     */
+    public void delete(Integer value) {
+        BinaryNode node = search(value);
+
+        if (node == null) {
+            return;
+        }
+
+        //if it's a leaf, then just de-assign parent left or right references
+        if (node.isLeaf()) {
+            if (Objects.equals(node.parent.left, node)) {
+                node.parent.left = null;
+            } else if (Objects.equals(node.parent.right, node)) {
+                node.parent.right = null;
+            }
+            return;
+        }
+
+        if (node.left == null && node.right == null) {
+            if (node.isRoot()) {
+                this.root = null;
+            } else {
+                BinaryNode parent = node.parent;
+                if (Objects.equals(parent.left, node)) {
+                    parent.left = null;
+                } else {
+                    parent.right = null;
+                }
+            }
+        } else if (node.left != null && node.right != null) {
+            //replace the far-most left node from the right side, with the root node, and delete the far most left leaf
+            //this is done because we need to keep traversal ordering
+            BinaryNode farMostLeft = locateFarLeftLeafNode(node.right);
+            //remove farMostLeft.parent left reference
+            farMostLeft.parent.left = null;
+
+            if (node.isRoot()) {
+                farMostLeft.left = this.root.left;
+                farMostLeft.right = this.root.right;
+                farMostLeft.parent = null;
+                this.root = farMostLeft;
+            } else {
+                BinaryNode nodeParent = node.parent;
+                nodeParent.left = farMostLeft;
+                farMostLeft.parent = nodeParent;
+            }
+        } else {
+            this.root = Objects.requireNonNullElseGet(node.left, () -> node.right); //re-assigns root to be node.right or node.left pointer
+        }
+
+    }
+
+    /**
+     * Searches the binary tree for a node with the specified value.
+     *
+     * @param value The value to search for.
+     *              Must not be null.
+     * @return The {@link BinaryNode} containing the value, or null if not found.
+     * <p>
+     * Time complexity: O(h) where h is the height of the tree.
+     */
+    public BinaryNode search(Integer value) {
+        return search(value, this.root);
+    }
+
+    private BinaryNode search(Integer value, BinaryNode node) {
+        if (node == null) {
+            return null;
+        }
+
+        int compareTo = value.compareTo(node.value);
+        return switch (compareTo) {
+            case 0 -> node;
+            case -1 -> search(value, node.left);
+            case 1 -> search(value, node.right);
+            default -> null;
+        };
+    }
+
+    /**
+     * Prints the binary tree's in-order traversal to the console.
+     * <p>
+     * Time complexity: O(n) where n is the number of nodes in the tree.
+     */
     public void printTraversalOrder() {
         ArrayList<Integer> traversalArrayList = getTraversalArrayList();
         for (Integer item : traversalArrayList) {
@@ -57,6 +199,13 @@ public class BinaryTree {
         }
     }
 
+    /**
+     * Retrieves the binary tree's in-order traversal as a list of values.
+     *
+     * @return An {@link ArrayList} containing the tree's in-order traversal.
+     * <p>
+     * Time complexity: O(n) where n is the number of nodes in the tree.
+     */
     public ArrayList<Integer> getTraversalArrayList() {
         ArrayList<Integer> traversalNodes = new ArrayList<>();
         ArrayList<Integer> rightTraversalNodes = new ArrayList<>();
@@ -72,6 +221,7 @@ public class BinaryTree {
         traversalNodes.appendAll(rightTraversalNodes);
         return traversalNodes;
     }
+
 
     private void printTraversalNodes(BinaryNode node, ArrayList<Integer> arrayList) {
         //don't print root node
@@ -105,7 +255,7 @@ public class BinaryTree {
         int compareTo = value.compareTo(node.left.value);
         if (compareTo > 0) {
             subtree_addAfter(node.left, value);
-        } else {
+        } else if (compareTo < 0) {
             subtree_addBefore(node.left, value);
         }
     }
@@ -120,7 +270,7 @@ public class BinaryTree {
         int compareTo = value.compareTo(node.right.value);
         if (compareTo > 0) {
             subtree_addAfter(node.right, value);
-        } else {
+        } else if (compareTo < 0) {
             subtree_addBefore(node.right, value);
         }
     }
