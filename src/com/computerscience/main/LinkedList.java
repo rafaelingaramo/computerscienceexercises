@@ -13,6 +13,14 @@ public class LinkedList<T> {
     private T[] internalCacheArray; //this is used to avoid re-computation of the array everytime the get method is called
 
     //appends into the collection, each node is linked pointing to the next one by reference
+
+    /**
+     * Adds the specified element to the end of the linked list.
+     *
+     * @param e The element to add. Must not be null.
+     *          <p>
+     *          Time complexity: O(1)
+     */
     public void append(T e) {
 
         internalSize++;
@@ -36,6 +44,17 @@ public class LinkedList<T> {
     //if the index is invalid then an IllegalArgumentException is thrown
     //it needs to iterate through all nodes to find the specific index, it makes O(n)
     //[] -> [] -> [] -> X -> [] - []
+
+    /**
+     * Adds the specified element at the specified index in the linked list.
+     * Shifts subsequent elements to the right if necessary.
+     *
+     * @param e     The element to add. Must not be null.
+     * @param index The position at which to add the element. Must be within [0, size].
+     * @throws IllegalArgumentException If the index is out of bounds.
+     *                                  <p>
+     *                                  Time complexity: O(n)
+     */
     public void append(T e, int index) {
         if (index < 0 || index > internalSize) {
             throw new IllegalArgumentException("Invalid requested index");
@@ -70,14 +89,33 @@ public class LinkedList<T> {
         this.internalCacheArray = null;
     }
 
+    /**
+     * Adds the specified element at the beginning of the linked list.
+     *
+     * @param e The element to add. Must not be null.
+     *          <p>
+     *          Time complexity: O(1)
+     */
     public void appendFirst(T e) {
         append(e, 0);
     }
 
+    /**
+     * Adds the specified element at the end of the linked list.
+     *
+     * @param e The element to add. Must not be null.
+     *          <p>
+     *          Time complexity: O(1)
+     */
     public void appendLast(T e) {
         append(e, internalSize);
     }
 
+    /**
+     * Removes all elements from the linked list.
+     * <p>
+     * Time complexity: O(n)
+     */
     public void clear() {
         clearRecursively(this.tail);
         this.head = null;
@@ -86,6 +124,14 @@ public class LinkedList<T> {
         this.internalCacheArray = null;
     }
 
+    /**
+     * Removes the element at the specified index in the linked list.
+     *
+     * @param index The position of the element to remove. Must be within [0, size - 1].
+     * @throws IllegalArgumentException If the index is out of bounds.
+     *                                  <p>
+     *                                  Time complexity: O(n)
+     */
     public void remove(int index) {
         Node<T> node = findSpecificNodeByIndex(this.head, index, 0);
         if (node == null) {
@@ -115,12 +161,31 @@ public class LinkedList<T> {
 
     //it uses the index to fetch the element
     //it uses the toArray therefore it's O(n)
+
+    /**
+     * Retrieves the element at the specified index in the linked list.
+     *
+     * @param index The position of the element to retrieve. Must be within [0, size - 1].
+     * @return The element at the specified index.
+     * @throws ArrayIndexOutOfBoundsException If the index is out of bounds.
+     *                                        <p>
+     *                                        Time complexity: O(n)
+     */
     public T get(int index) {
         return toArray()[index];
     }
 
     //iterate though all elements to form a new array, O(n)
     //this class has a internal cache that prevents this method from re-computing all times
+
+    /**
+     * Converts the linked list into an array representation.
+     * If a cached array is available, it is reused.
+     *
+     * @return An array containing all elements in the linked list, in order.
+     * <p>
+     * Time complexity: O(n)
+     */
     @SuppressWarnings("unchecked")
     public T[] toArray() {
         if (internalCacheArray != null) {
@@ -132,6 +197,13 @@ public class LinkedList<T> {
         return (T[]) resultArray;
     }
 
+    /**
+     * Returns the number of elements in the linked list.
+     *
+     * @return The size of the linked list.
+     * <p>
+     * Time complexity: O(1)
+     */
     public Integer size() {
         return this.internalSize;
     }

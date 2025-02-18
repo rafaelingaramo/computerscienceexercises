@@ -1,20 +1,41 @@
 package com.computerscience.main;
 
 
-//LIFO collection that works as last in first out, internally uses a linked list to control, the elements
+/**
+ * A generic implementation of a stack (LIFO collection), where the last element added is the first to be removed.
+ * This class internally uses a {@link LinkedList} to manage the elements.
+ *
+ * @param <T> The type of elements stored in the stack.
+ */
 public class Stack<T> {
     private final LinkedList<T> internalLinkedList = new LinkedList<>();
 
+    /**
+     * Checks if the stack is empty.
+     *
+     * @return {@code true} if the stack contains no elements; {@code false} otherwise.
+     * <p>Time complexity: O(1)</p>
+     */
     public boolean empty() {
         return internalLinkedList.size() == 0;
     }
 
-    //looks but not retrieves the top object of the collection
+    /**
+     * Looks at but does not remove the top element of the stack.
+     *
+     * @return The top element of the stack, or {@code null} if the stack is empty.
+     * <p>Time complexity: O(1)</p>
+     */
     public T peek() {
         return internalLinkedList.get(internalLinkedList.size()-1);
     }
 
-    //retrieves the top object of the collection, returns null if there's none
+    /**
+     * Retrieves and removes the top element of the stack.
+     *
+     * @return The top element of the stack, or {@code null} if the stack is empty.
+     * <p>Time complexity: O(1)</p>
+     */
     public T pop() {
         T pop = internalLinkedList.get(internalLinkedList.size()-1);
         if (pop != null) {
@@ -23,7 +44,12 @@ public class Stack<T> {
         return pop;
     }
 
-    //pushes the element onto the top of the stack
+    /**
+     * Pushes the specified element onto the top of the stack.
+     *
+     * @param e The element to be added. Must not be null.
+     *          <p>Time complexity: O(1)</p>
+     */
     public void push(T e) {
         internalLinkedList.append(e);
     }

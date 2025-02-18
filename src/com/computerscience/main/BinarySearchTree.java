@@ -2,16 +2,29 @@ package com.computerscience.main;
 
 import java.util.Objects;
 
+/**
+ * Represents a binary search tree (BST) that allows for storing integer values
+ * and performing operations such as addition, deletion, and searching.
+ * <p>
+ * The tree adheres to BST rules where the left child contains values less than the parent,
+ * and the right child contains values greater than the parent.
+ * <p>
+ * Time complexities:
+ * - Insertion: O(h), where h is the height of the tree.
+ * - Deletion: O(h), where h is the height of the tree.
+ * - Search: O(h), where h is the height of the tree.
+ * <p>
+ * This class is not thread-safe and is designed for single-threaded usage.
+ */
 public class BinarySearchTree {
     private BinaryNode root;
 
     /**
-     * Constructs a binary tree with a specified root value.
+     * Constructs a binary tree with the specified root value.
      *
-     * @param rootValue The value of the root node.
-     *                  Must not be null.
-     *                  <p>
-     *                  Time complexity: O(1)
+     * @param rootValue The value of the root node. Must not be null.
+     * 
+     * Time complexity: O(1)
      */
     public BinarySearchTree(Integer rootValue) {
         this.root = new BinaryNode(rootValue);
@@ -59,19 +72,18 @@ public class BinarySearchTree {
     }
 
     /**
-     * Adds a value to the binary tree following binary search tree rules.
+     * Adds a value to the binary tree in accordance with binary search tree rules.
      *
-     * @param value The value to add to the tree.
-     *              Must not be null.
-     *              <p>
-     *              Time complexity: O(h) where h is the height of the tree.
+     * @param value The value to add to the tree. Must not be null.
+     * 
+     * Time complexity: O(h), where h is the height of the tree.
      */
     public void add(Integer value) {
         if (this.root == null) {
             this.root = new BinaryNode(value);
             return;
         }
-
+    
         int rootCompare = value.compareTo(this.root.value);
         if (rootCompare > 0) {
             subtree_addAfter(this.root, value);
@@ -81,9 +93,9 @@ public class BinarySearchTree {
     }
 
     /**
-     * Prints the binary tree structure to the console.
-     * <p>
-     * Time complexity: O(n) where n is the number of nodes in the tree.
+     * Prints the structure of the binary tree to the console.
+     * 
+     * Time complexity: O(n), where n is the number of nodes in the tree.
      */
     public void printTree() {
         if (this.root == null) {
@@ -101,20 +113,10 @@ public class BinarySearchTree {
         }
     }
 
-    /**
-     * Deletes a node from the binary tree by its value if it exists.
-     *
-     * @param value Value of the node to delete.
-     *              Must not be null.
-     *              <p>
-     *              Time complexity: O(h) where h is the height of the tree.
-     */
     public void delete(Integer value) {
         BinaryNode node = search(value);
 
-        if (node == null) {
-            return;
-        }
+        if (node == null) { return; }
 
         //if it's a leaf, then just de-assign parent left or right references
         if (node.isLeaf()) {
@@ -131,11 +133,7 @@ public class BinarySearchTree {
                 this.root = null;
             } else {
                 BinaryNode parent = node.parent;
-                if (Objects.equals(parent.left, node)) {
-                    parent.left = null;
-                } else {
-                    parent.right = null;
-                }
+                if (Objects.equals(parent.left, node)) { parent.left = null; } else { parent.right = null; }
             }
         } else if (node.left != null && node.right != null) {
             //replace the far-most left node from the right side, with the root node, and delete the far most left leaf
@@ -160,15 +158,6 @@ public class BinarySearchTree {
 
     }
 
-    /**
-     * Searches the binary tree for a node with the specified value.
-     *
-     * @param value The value to search for.
-     *              Must not be null.
-     * @return The {@link BinaryNode} containing the value, or null if not found.
-     * <p>
-     * Time complexity: O(h) where h is the height of the tree.
-     */
     public BinaryNode search(Integer value) {
         return search(value, this.root);
     }
@@ -187,11 +176,6 @@ public class BinarySearchTree {
         };
     }
 
-    /**
-     * Prints the binary tree's in-order traversal to the console.
-     * <p>
-     * Time complexity: O(n) where n is the number of nodes in the tree.
-     */
     public void printTraversalOrder() {
         ArrayList<Integer> traversalArrayList = getTraversalArrayList();
         for (Integer item : traversalArrayList) {
@@ -199,13 +183,6 @@ public class BinarySearchTree {
         }
     }
 
-    /**
-     * Retrieves the binary tree's in-order traversal as a list of values.
-     *
-     * @return An {@link ArrayList} containing the tree's in-order traversal.
-     * <p>
-     * Time complexity: O(n) where n is the number of nodes in the tree.
-     */
     public ArrayList<Integer> getTraversalArrayList() {
         ArrayList<Integer> traversalNodes = new ArrayList<>();
         ArrayList<Integer> rightTraversalNodes = new ArrayList<>();
