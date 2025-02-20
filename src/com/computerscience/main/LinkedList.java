@@ -10,7 +10,6 @@ public class LinkedList<T> {
     private Node<T> head;
     private Node<T> tail;
     private Integer internalSize = 0;
-    private T[] internalCacheArray; //this is used to avoid re-computation of the array everytime the get method is called
 
     //appends into the collection, each node is linked pointing to the next one by reference
 
@@ -36,8 +35,6 @@ public class LinkedList<T> {
         this.tail.next = newNode;
         //updates the tail to the new node
         this.tail = newNode;
-        //it invalidates the internal cache array
-        this.internalCacheArray = null;
     }
 
     //appends into specified index, it shifts all entries to the right
@@ -85,8 +82,6 @@ public class LinkedList<T> {
         if (node.previous != null) {
             node.previous.next = newNode;
         }
-        //it invalidates the internal cache array
-        this.internalCacheArray = null;
     }
 
     /**
@@ -121,7 +116,6 @@ public class LinkedList<T> {
         this.head = null;
         this.tail = null;
         this.internalSize = 0;
-        this.internalCacheArray = null;
     }
 
     /**
@@ -156,7 +150,6 @@ public class LinkedList<T> {
         }
 
         this.internalSize--;
-        this.internalCacheArray = null;
     }
 
     //it uses the index to fetch the element
@@ -188,10 +181,6 @@ public class LinkedList<T> {
      */
     @SuppressWarnings("unchecked")
     public T[] toArray() {
-        if (internalCacheArray != null) {
-            return internalCacheArray;
-        }
-
         Object[] resultArray = new Object[internalSize];
         fillArrayPosWithNodes(this.head, resultArray, 0);
         return (T[]) resultArray;
