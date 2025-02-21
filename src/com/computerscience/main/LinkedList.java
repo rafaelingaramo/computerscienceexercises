@@ -151,10 +151,7 @@ public class LinkedList<T> {
 
         this.internalSize--;
     }
-
-    //it uses the index to fetch the element
-    //it uses the toArray therefore it's O(n)
-
+    
     /**
      * Retrieves the element at the specified index in the linked list.
      *
@@ -165,25 +162,15 @@ public class LinkedList<T> {
      *                                        Time complexity: O(n)
      */
     public T get(int index) {
-        return toArray()[index];
+        return getIndex(index, this.head, 0);
     }
 
-    //iterate though all elements to form a new array, O(n)
-    //this class has a internal cache that prevents this method from re-computing all times
-
-    /**
-     * Converts the linked list into an array representation.
-     * If a cached array is available, it is reused.
-     *
-     * @return An array containing all elements in the linked list, in order.
-     * <p>
-     * Time complexity: O(n)
-     */
-    @SuppressWarnings("unchecked")
-    public T[] toArray() {
-        Object[] resultArray = new Object[internalSize];
-        fillArrayPosWithNodes(this.head, resultArray, 0);
-        return (T[]) resultArray;
+    private T getIndex(int index, Node<T> node, int currentIndex) {
+        if (currentIndex == index) {
+            return node.value;
+        }
+        if (node.next == null) {return null;}
+        return getIndex(index, node.next, ++currentIndex);
     }
 
     /**
